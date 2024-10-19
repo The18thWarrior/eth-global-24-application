@@ -8,7 +8,8 @@ import { useAccount, useDisconnect } from 'wagmi';
 import { useThemeSwitcher } from '@/hooks/useThemeSwitcher';
 import SocialIcons from '@/components/ui/SocialIcons';
 import { getTextColor } from '@/services/theme';
-import AccountButton from '@/components/ui/AccountButton';
+import AccountButton from '@/components/walletConnect/AccountButton';
+import CoinbaseButton from '@/components/coinbase/CoinbaseButton';
 
 
 const drawerWidth = 240;
@@ -82,8 +83,8 @@ function Header() {
         {headerButton}
         <Divider />
 
-        {<Stack direction={'row'} my={2} justifyItems={'center'} alignContent={'center'} mx={'auto'} display={'block'} width={'fit-content'}>
-          <AccountButton />
+        { <Stack direction={'row'} my={2} justifyItems={'center'} alignContent={'center'} mx={'auto'} display={'block'} width={'fit-content'}>
+          <CoinbaseButton />
         </Stack>}
         
 
@@ -129,7 +130,7 @@ function Header() {
 
               <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                 {
-                  <AccountButton />
+                  <CoinbaseButton />
                 }
 
                 <IconButton
