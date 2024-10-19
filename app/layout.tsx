@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import '@coinbase/onchainkit/styles.css';
 import { ContextProvider } from "@/context";
 import Wrapper from "./wrapper";
 
