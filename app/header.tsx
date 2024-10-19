@@ -4,12 +4,13 @@ import { useTheme } from '@mui/material/styles';
 import { Typography, AppBar, Box, Button, Toolbar, Stack, Divider, Drawer, IconButton, Menu, MenuItem, ButtonGroup } from '@mui/material';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Menu as MenuIcon, LightMode, DarkMode } from '@mui/icons-material'
-import { useAccount, useDisconnect } from 'wagmi';
+import { useAccount, useDisconnect, useSwitchChain } from 'wagmi';
 import { useThemeSwitcher } from '@/hooks/useThemeSwitcher';
 import SocialIcons from '@/components/ui/SocialIcons';
 import { getTextColor } from '@/services/theme';
 import AccountButton from '@/components/walletConnect/AccountButton';
 import CoinbaseButton from '@/components/coinbase/CoinbaseButton';
+import { baseSepolia } from 'wagmi/chains';
 
 
 const drawerWidth = 240;
@@ -25,8 +26,10 @@ function Header() {
   const theme = useTheme();
   const textColor = getTextColor(theme);
   const themeSwitcher = useThemeSwitcher();
-  const { isConnected, address } = useAccount();
+  const { isConnected, address, chainId } = useAccount();
   const { disconnect } = useDisconnect();
+  const { chains, switchChain } = useSwitchChain()
+  
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const url = 'xucre.expo.client://ViewWallet';
@@ -56,13 +59,19 @@ function Header() {
   const handleUserOpen = (event: React.MouseEvent<HTMLButtonElement>) => { }
 
   const navigateTo = (type) => {
-    if (type === 'Index Fund') {
-      router.replace('/index-fund')
+    if (type === 'Index Funds') {
+      router.replace('/index-funds')
     } else if (type === 'Home') {
       router.replace('/')
     }
   }
 
+
+  useEffect(() => {
+    if (isConnected) {
+      if (chainId === 8453) switchChain({ chainId: baseSepolia.id });
+    }
+  }, [isConnected, switchChain, chainId])
 
   const headerButton = (
     <Button variant="text" onClick={() => router.push('/')} >
@@ -91,6 +100,11 @@ function Header() {
       </Box>
       <Stack direction={'column'} spacing={2} width={'100%'} alignItems={'center'}>
 
+          <ButtonGroup variant="text" size="large" color={'inherit'} aria-label="Basic button group" sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'center', alignItems: 'center' }}>
+            {navItems.map((item) => (
+              <Button onClick={() => navigateTo(item)} key={item} variant={'text'} sx={{ textTransform: 'capitalize', letterSpacing: 2 }}>{item}</Button>
+            ))}
+          </ButtonGroup>
         <IconButton
           color={theme.palette.mode === 'dark' ? 'warning' : 'info'}
           aria-label="change theme"
@@ -115,8 +129,14 @@ function Header() {
             <Box sx={{}}>
               {headerButton}
             </Box>
+            <ButtonGroup variant="text" size="large" color={'inherit'} aria-label="Basic button group" sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'center', alignItems: 'center' }}>
+              {navItems.map((item) => (
+                <Button onClick={() => navigateTo(item)} key={item} variant={'text'} sx={{ textTransform: 'capitalize', letterSpacing: 2 }}>{item}</Button>
+              ))}
+            </ButtonGroup>
             <Stack direction={'row'} sx={{}} alignContent={'end'} justifyContent={'end'}>
               <Box sx={{}}>
+              
               </Box>
               <IconButton
                 color={theme.palette.mode === 'dark' ? 'warning' : 'info'}
