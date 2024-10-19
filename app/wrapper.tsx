@@ -19,7 +19,7 @@ export default function Wrapper({
   children: React.ReactNode;
 }) {
   return (
-    <Box>
+    <Box mb={10}>
       <ThemeSwitcherProvider>
         <Suspense >
           <CssBaseline />
