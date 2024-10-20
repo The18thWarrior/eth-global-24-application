@@ -7,12 +7,13 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
-import { PortfolioItem, PriceData } from '@/hooks/useIndexFunds';
+import { PortfolioItem as PortfolioItemType, PriceData } from '@/hooks/useIndexFunds';
+import PortfolioItem  from './PortfolioItem';
 
 const DEFAULT_LOGO = "/icon-green.png"
 
-export default function PortfolioItemList({ portfolioItems, priceMap }: { portfolioItems: PortfolioItem[], priceMap: { [key: string]: PriceData } }) {
-  const openItem = (item: PortfolioItem) => () => {
+export default function PortfolioItemList({ portfolioItems, priceMap, sourceToken }: { sourceToken: PortfolioItemType,portfolioItems: PortfolioItemType[], priceMap: { [key: string]: PriceData } }) {
+  const openItem = (item: PortfolioItemType) => () => {
     window.open(`https://polygonscan.com/address/${item.address}`, '_blank');
   }
   return (
@@ -26,50 +27,9 @@ export default function PortfolioItemList({ portfolioItems, priceMap }: { portfo
       }}>
         {portfolioItems.filter((item) => item.active).map((item, i) => {
           const price = priceMap[item.address.toLowerCase()];
+          
           return (
-            <span key={item.address} >
-              <ListItem alignItems="flex-start">
-                <ListItemAvatar onClick={openItem(item)} sx={{ cursor: 'pointer' }}>
-                  <Avatar alt={item.name} src={item.logo} >
-                    <Avatar alt={item.name} src={price?.logo} >
-                      <Avatar alt={item.name} src={DEFAULT_LOGO} />
-                    </Avatar>
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  primary={
-                    <React.Fragment>
-                      <Typography
-                        component="span"
-                        variant="body1"
-                        sx={{ color: 'text.primary', display: 'inline', fontWeight: 'bold' }}
-                      >
-                        {item.name} -
-                      </Typography>
-                      <Typography
-                        component="span"
-                        variant="body1"
-                        sx={{ color: 'text.primary', display: 'inline', pl: 1 }}
-                      >
-                        ({price && price.items[0].price ? `$${price.items[0].price.toFixed(2)}` : 'N/A'})
-                      </Typography>
-                    </React.Fragment>
-                  }
-                  secondary={
-                    <React.Fragment>
-                      <Typography
-                        component="span"
-                        variant="body2"
-                        sx={{ color: 'text.primary', display: 'inline' }}
-                      >
-                        {item.description}
-                      </Typography>
-                    </React.Fragment>
-                  }
-                />
-              </ListItem>
-              {i < portfolioItems.length - 1 && <Divider variant="inset" component="li" />}
-            </span>
+            <PortfolioItem key={item.address} sourceToken={sourceToken} portfolioItem={{...item}} price={price} showDivider={i < portfolioItems.length - 1} openItem={openItem}/>
           )
         })}
       </List>

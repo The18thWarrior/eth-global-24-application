@@ -58,7 +58,26 @@ export type IndexFund = {
   portfolio: PortfolioItem[]
 };
 
-const initialSourceTokens = [] as PortfolioItem[];
+const initialSourceTokens = [
+  {
+    "name": "ETH",
+    "address": zeroAddress,
+    "chainId": 8453,
+    "weight": 3400,
+    "poolFee": 3000,
+    "active": true,
+    "decimals": 18,
+    "sourceFees": {
+      "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913": 3000,
+      "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359": 3000
+    },
+    "chartColor": "#FFD700",
+    "description": "Wrapped Bitcoin (cbBTC) is an ERC20 token pegged to the price of Bitcoin.",
+    "logo": "https://xucre-public.s3.sa-east-1.amazonaws.com/btc.png",
+    "chain_logo": "https://basescan.org/assets/base/images/svg/logos/chain-light.svg?v=24.9.2.0",
+    "links": ["https://www.centre.io/usdc"]
+  }
+] as PortfolioItem[];
 const initialFunds = [{
   "name": "Classic Fund",
   "cardSubtitle": "A curated selection of foundational assets",
@@ -318,4 +337,37 @@ export function useConnectedIndexFund({ fund }: { fund: IndexFund }) {
   const loading = isLoading || isPending;
 
   return { balance: sourceBalance, allowance: sourceAllowance, sourceToken, sourceTokens: initialSourceTokens.filter((token) => token.chainId === normalizeDevChains(chainId)), setSourceToken, approveContract, initiateSpot, hash, error, loading, status, confirmationHash }
+}
+
+export function useFundItem({token, source}: {token: PortfolioItem, source: PortfolioItem}) {
+  const { chainId } = useAccount();
+  const [poolFee, setPoolFee] = useState(3000);
+  const [tickSpacing, setTickSpacing] = useState(200);
+  const { data, refetch, isFetched, error } = useReadContract({
+    address: source ? getAddress(source.address) : zeroAddress,
+    abi: XucreETF.abi,
+    functionName: 'getPoolKey',
+    args: [source.address, token.address, poolFee, tickSpacing],
+    query: { enabled: false }
+  })
+
+  const doesPoolExist = data && data !== zeroAddress;
+  const syncState = async () => {
+    await refetch();
+  }
+
+  useEffect(() => {
+    if (error) {
+      console.log(error);
+    }
+  }, [error])
+
+  useEffect(() => {
+    // if (chainId) {
+      console.log('getting pool key' );
+      syncState();
+    // }
+  }, [])
+
+  return { poolKey: data, isFetched, syncState, doesPoolExist }
 }

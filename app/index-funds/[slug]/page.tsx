@@ -72,12 +72,16 @@ export default function IndexFundItem({ params }: { params: { slug: string } }) 
       <Typography variant={'body1'} color={textColor}>{_indexFund.description}</Typography>
     </Stack>
   )
+  
+  useEffect(() => {
+    console.log('sourceToken', sourceToken)
+  }, [sourceToken])
 
   if (!isConnected && !isConnecting && !isReconnecting) {
     return <WalletNotConnected />
   }
 
-  if (_indexFund === undefined) return <></>;
+  if (_indexFund === undefined || !sourceToken) return <></>;
   return (
     <Box mt={{ xs: 0, sm: 4 }} pb={4}>
 
@@ -85,7 +89,7 @@ export default function IndexFundItem({ params }: { params: { slug: string } }) 
         <OpaqueCard>
           <Stack maxWidth={'50vw'} direction={'column'} justifyContent={'center'} alignItems={'center'}>
             <PortfolioDescription />
-            <PortfolioItemList portfolioItems={_indexFund.portfolio} priceMap={priceMap} />
+            <PortfolioItemList sourceToken={sourceToken} portfolioItems={_indexFund.portfolio} priceMap={priceMap} />
           </Stack>
         </OpaqueCard>
         <Box maxWidth={'50vw'}>
@@ -96,7 +100,7 @@ export default function IndexFundItem({ params }: { params: { slug: string } }) 
 
       <Stack direction={'column'} m={2} spacing={4} justifyContent={'center'} alignItems={'center'} sx={{ display: { md: 'none', xs: 'flex' } }}>
         <PortfolioDescription />
-        <PortfolioItemList portfolioItems={_indexFund.portfolio} priceMap={priceMap} />
+        <PortfolioItemList sourceToken={sourceToken} portfolioItems={_indexFund.portfolio} priceMap={priceMap} />
         <Divider sx={{ color: textColor, width: '80vw' }} />
 
         {<BuyItem />}
