@@ -3,14 +3,14 @@ import { getTextColor } from "@/services/theme";
 import { Divider, useTheme } from "@mui/material";
 import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react";
-import { useAccount, useConnections } from "wagmi";
+import { useAccount } from "wagmi";
 import { parseUnits, formatUnits } from "viem";
 import { useConnectedIndexFund, useIndexFunds, PriceData } from "@/hooks/useIndexFunds";
 import WalletNotConnected from "@/components/ui/WalletNotConnected";
 import PortfolioItemList from "@/components/indexFunds/PortfolioList";
 import { getTokenPrices } from "@/services/covalent";
 //import { BuyItem } from "@/components/portfolio/buyItem";
-import { chainValidation, normalizeDevChains } from "@/services/helpers";
+import { normalizeDevChains } from "@/services/helpers";
 import React from "react";
 import OpaqueCard from "@/components/ui/OpaqueCard";
 import BuyItem from "@/components/indexFunds/BuyItem";
@@ -25,7 +25,7 @@ export default function IndexFundItem({ params }: { params: { slug: string } }) 
     return encodeURIComponent(fund.name) === slugString || normalizeDevChains(chainId) === fund.chainId;
   });
   const { balance, allowance, hash, error, loading, confirmationHash, approveContract, initiateSpot, sourceToken, sourceTokens, setSourceToken, status } = useConnectedIndexFund({ fund: _indexFund });
-  const [amount, setAmount] = useState<BigInt>(BigInt(0));
+  const [amount, setAmount] = useState<bigint>(BigInt(0));
   const [rawAmount, setRawAmount] = useState<string>('');
   const [priceData, setPriceData] = useState([] as PriceData[]);
   const [priceMap, setPriceMap] = useState({} as { [key: string]: PriceData });
@@ -64,7 +64,7 @@ export default function IndexFundItem({ params }: { params: { slug: string } }) 
     initiateSpot(amount);
   }
   const allowanceString = allowance ? formatUnits(allowance as bigint, sourceToken.decimals) : 0;
-  const allowanceAmount = allowance ? (allowance as BigInt) <= amount : true;
+  const allowanceAmount = allowance ? (allowance as bigint) <= amount : true;
 
   const PortfolioDescription = () => (
     <Stack direction={'column'} spacing={2}>
@@ -93,7 +93,7 @@ export default function IndexFundItem({ params }: { params: { slug: string } }) 
           </Stack>
         </OpaqueCard>
         <Box maxWidth={'50vw'}>
-          {<BuyItem />}
+        <BuyItem confirmationHash={confirmationHash} status={status} portfolio={_indexFund} sourceToken={sourceToken} sourceTokens={sourceTokens} setSourceToken={setSourceToken} balance={balance} allowance={allowance} rawAmount={rawAmount} handleAmountUpdate={handleAmountUpdate} amount={amount} handleApproval={handleApproval} loading={loading} allowanceAmount={allowanceAmount} handleSpot={handleSpot} />
         </Box>
 
       </Stack>
@@ -103,7 +103,7 @@ export default function IndexFundItem({ params }: { params: { slug: string } }) 
         <PortfolioItemList sourceToken={sourceToken} portfolioItems={_indexFund.portfolio} priceMap={priceMap} />
         <Divider sx={{ color: textColor, width: '80vw' }} />
 
-        {<BuyItem />}
+        <BuyItem confirmationHash={confirmationHash} status={status} portfolio={_indexFund} sourceToken={sourceToken} sourceTokens={sourceTokens} setSourceToken={setSourceToken} balance={balance} allowance={allowance} rawAmount={rawAmount} handleAmountUpdate={handleAmountUpdate} amount={amount} handleApproval={handleApproval} loading={loading} allowanceAmount={allowanceAmount} handleSpot={handleSpot} />
       </Stack>
     </Box>
   );

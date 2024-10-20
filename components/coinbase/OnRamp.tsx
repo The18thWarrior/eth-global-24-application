@@ -12,14 +12,14 @@ const projectId = 'ac8b42b9-7cf5-40c3-bb73-bc928a1964f5';
 const OnRamp = ({ showBalance = true }) => {
   const { address } = useAccount();
   const theme = useTheme();
-  const [instance, setGatefiInstance] = useState<any>(null);
+  //const [instance, setGatefiInstance] = useState<any>(null);
 
   useEffect(() => {    
   },[])
 
   useEffect(() => {
     if (!address) return;
-    let _instance = null;
+    //let _instance = null;
     //if (instance) {
 
     //}

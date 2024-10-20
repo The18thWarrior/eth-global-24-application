@@ -30,7 +30,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <ContextProvider>
-          <Wrapper children={children} />
+          <Wrapper >{children}</Wrapper>
         </ContextProvider>
       </body>
     </html>
